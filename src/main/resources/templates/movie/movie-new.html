@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head></head>
+
+<body>
+    <h1>Create New Movie</h1>
+    <form method="POST" th:action="@{/movie/new}" th:object="${movieCreateDTO}">
+        <table>
+            <tr>
+                <td>Title :</td>
+                <td>
+                    <input name="title" type="text" th:field="*{movieTitle}">
+                    <div th:if="${#fields.hasErrors('movieTitle')}" th:errors="*{movieTitle}" style="color: red;"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>Genre :</td>
+                <td>
+                    <input name="Genre" type="text" th:field="*{genre}">
+                    <div th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}" style="color: red;"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Actor Name :</td>
+                <td>
+                    <input name="actor" type="text" th:field="*{actor}">
+                    <div th:if="${#fields.hasErrors('actor')}" th:errors="*{actor}" style="color: red;"></div>
+
+                </td>
+            </tr>
+            <tr>
+                <td>Cinema :</td>
+                <td>
+                    <input name="Cinema" type="text" th:field="*{cinema}">
+                    <div th:if="${#fields.hasErrors('cinema')}" th:errors="*{cinema}" style="color: red;"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>Review :</td>
+                <td>
+                    <textarea name="review" rows="5" cols="20" th:field="*{review}"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Submit">
+
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</body>
+
+</html>
