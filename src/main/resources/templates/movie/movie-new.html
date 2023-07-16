@@ -31,13 +31,6 @@
                 </td>
             </tr>
             <tr>
-                <td>Cinema :</td>
-                <td>
-                    <input name="Cinema" type="text" th:field="*{cinema}">
-                    <div th:if="${#fields.hasErrors('cinema')}" th:errors="*{cinema}" style="color: red;"></div>
-                </td>
-            </tr>
-            <tr>
                 <td>Review :</td>
                 <td>
                     <textarea name="review" rows="5" cols="20" th:field="*{review}"></textarea>

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.nostratech.movie.service.MovieService;
 import com.nostratech.movie.domain.Actor;
-import com.nostratech.movie.domain.Cinema;
 import com.nostratech.movie.domain.Review;
 import com.nostratech.movie.domain.Movie;
 import com.nostratech.movie.dto.MovieCreateDTO;
@@ -47,7 +46,6 @@ public class MovieServiceImpl implements MovieService {
 		String sReview = joiner2.toString();
 		dto.setMovieId(Movie.getId());
 		dto.setGenre(Movie.getGenre());
-		dto.setCinema(Movie.getCinema().getName());
 		dto.setActor(sActor);
 		dto.setReview(sReview);
 		dto.setMovieTitle(Movie.getTitle());
@@ -73,7 +71,6 @@ public class MovieServiceImpl implements MovieService {
 			}
 			String sReview = joiner2.toString();
 			dto.setMovieId(m.getId());
-			dto.setCinema(m.getCinema().getName());
 			dto.setGenre(m.getGenre());
 			dto.setActor(sActor);
 			dto.setReview(sReview);
@@ -90,14 +87,11 @@ public class MovieServiceImpl implements MovieService {
 		Review review = new Review();
 		review.setReview(dto.getReview());
 
-		Cinema cinema = new Cinema();
-		cinema.setName(dto.getCinema());
 		Movie Movie = new Movie();
 
 		Movie.addActor(Actor);
 		Movie.setTitle(dto.getMovieTitle());
 		Movie.setGenre(dto.getGenre());
-		Movie.setCinema(cinema);
 		Movie.addReview(review);
 		MovieRepository.save(Movie);
 	}

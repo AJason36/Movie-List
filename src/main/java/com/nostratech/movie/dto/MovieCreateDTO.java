@@ -19,10 +19,7 @@ public class MovieCreateDTO {
 	
 	@NotBlank
 	private String actor;
-	
-	@NotBlank
-	private String cinema;
-	
+		
 	private String review;
 
 }

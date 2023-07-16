@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nostratech.movie.domain.Actor;
-import com.nostratech.movie.domain.Cinema;
 import com.nostratech.movie.domain.Movie;
 import com.nostratech.movie.domain.Review;
 import com.nostratech.movie.repository.MovieRepository;
@@ -22,12 +21,11 @@ import com.nostratech.movie.repository.impl.MovieRepositoryImpl;
 public class AppConfig {
 	
 	@Bean
-    public Movie movie( Cinema cinema,  Review review1,  Review review2,   Actor actor1,  Actor actor2) {
+    public Movie movie( Review review1,  Review review2,   Actor actor1,  Actor actor2) {
         Movie movie = new Movie();
         movie.setId(1L);
         movie.setTitle("Lost Treasure");
         movie.setGenre("Adventure");
-        movie.setCinema(cinema);
 
         List<Review> reviews = new ArrayList<>();
         reviews.add(review1);
@@ -42,14 +40,6 @@ public class AppConfig {
         movie.setActors(actors);
 
         return movie;
-    }
-
-    @Bean
-    public Cinema cinema() {
-    	Cinema cinema = new Cinema();
-    	cinema.setName("XXI");
-
-        return cinema;
     }
 
     @Bean

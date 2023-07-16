@@ -20,7 +20,6 @@ public class MovieDetailDTO implements Serializable {
 	private String movieTitle;
 	
 	private String genre;
-	private String cinema;
 	private String actor;
 	
 	private String review;
