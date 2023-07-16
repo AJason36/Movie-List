@@ -1,5 +1,28 @@
 server:
   port: 8081
-  
+
+app:
+  currency: IDR
+  timezone: Asia/Jakarta
+  welcome-text: Hello World from Jason, are you ready.
 cloud:
   api-key: ${CLOUD_KEY2}
+
+spring:
+  datasource:
+    hikari:
+      connection-timeout: 600000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      maximum-pool-size: 10
+    url: jdbc:postgresql://localhost/Movie_List
+    username: jason
+    password: 12345
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true

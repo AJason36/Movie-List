@@ -46,7 +46,7 @@ public class MovieResource {
 	@PostMapping("/movie")
 	public ResponseEntity<Void> createANewMovie(@RequestBody MovieCreateDTO dto){
 		MovieService.createNewMovie(dto);
-		return ResponseEntity.created(URI.create("/  ")).build();
+		return ResponseEntity.created(URI.create("/movie")).build();
 	}
 	
 	@GetMapping("/movie")

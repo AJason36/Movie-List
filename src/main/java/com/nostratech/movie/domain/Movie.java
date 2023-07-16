@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class Movie {
 	private Long id;
-    private Cinema cinema;
     private List<Review> reviews = new ArrayList<>();
     private List<Actor> actors = new ArrayList<>();
     private String title;
