@@ -17,6 +17,9 @@ public class MovieUpdateRequestDTO {
 	@NotBlank
 	private String actor;
 	
+	@NotBlank
+	private String genre;
+	
 	private String review;
 
 }
