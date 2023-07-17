@@ -30,44 +30,42 @@ public class MovieResource {
 	
 	private final MovieService MovieService;
 
-	//nama yang salah /get-Movie/{MovieId}
-	@GetMapping("/movie/{MovieId}")
-	public MovieDetailDTO findMovieDetail(@PathVariable("MovieId") Long id) {
+	@GetMapping("/v1/movie/{movieId}")
+	public ResponseEntity<MovieDetailDTO> findMovieDetail(@PathVariable("movieId") String id) {
 		StopWatch stopWatch = new StopWatch();
 		log.info("start findMovieDetail "+id);
 		stopWatch.start();
 		MovieDetailDTO result =  MovieService.findMovieDetailById(id);
 		log.info("finish findMovieDetail. execution time = {}",stopWatch.getTotalTimeMillis());
-		return result;
+		return ResponseEntity.ok(result);
 
 	}
 	
 	//nama yang salah /save-Movie /create-Movie
-	@PostMapping("/movie")
+	@PostMapping("/v1/movie")
 	public ResponseEntity<Void> createANewMovie(@RequestBody MovieCreateDTO dto){
 		MovieService.createNewMovie(dto);
 		return ResponseEntity.created(URI.create("/movie")).build();
 	}
 	
-	@GetMapping("/movie")
+	@GetMapping("/v1/movie")
 	public ResponseEntity<List<MovieDetailDTO>> findMovieList(){
 		return ResponseEntity.ok().body(MovieService.findMovieListDetail());
 		
 	}
 	
 	//PUT /movie
-	@PutMapping("/movie/{MovieId}")
-	public ResponseEntity<Void> updateMovie(@PathVariable("MovieId") Long MovieId, 
+	@PutMapping("/v1/movie/{movieId}")
+	public ResponseEntity<Void> updateMovie(@PathVariable("movieId") String movieId, 
 			@RequestBody MovieUpdateRequestDTO dto){
-		MovieService.updateMovie(MovieId, dto);
+		MovieService.updateMovie(movieId, dto);
 		return ResponseEntity.ok().build();
 	}
 	
 	//DELETE /movie
-	@DeleteMapping("/movie/{MovieId}")
-	public ResponseEntity<Void> deleteMovie(@PathVariable("MovieId") Long MovieId){
-		MovieService.deleteMovie(MovieId);
+	@DeleteMapping("/v1/movie/{movieId}")
+	public ResponseEntity<Void> deleteMovie(@PathVariable("movieId") String movieId){
+		MovieService.deleteMovie(movieId);
 		return ResponseEntity.ok().build();
 	}
-	
 }
