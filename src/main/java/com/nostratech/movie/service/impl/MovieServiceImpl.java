@@ -8,12 +8,13 @@ import java.util.StringJoiner;
 import org.springframework.stereotype.Service;
 
 import com.nostratech.movie.service.MovieService;
-import com.nostratech.movie.domain.Actor;
+import com.nostratech.movie.domain.Person;
 import com.nostratech.movie.domain.Review;
 import com.nostratech.movie.domain.Movie;
 import com.nostratech.movie.dto.MovieCreateDTO;
 import com.nostratech.movie.dto.MovieDetailDTO;
 import com.nostratech.movie.dto.MovieUpdateRequestDTO;
+import com.nostratech.movie.exception.BadRequestException;
 import com.nostratech.movie.repository.MovieRepository;
 
 import lombok.AllArgsConstructor;
@@ -28,27 +29,28 @@ public class MovieServiceImpl implements MovieService {
 	private final MovieRepository MovieRepository;
 
 	@Override
-	public MovieDetailDTO findMovieDetailById(Long movieId) {
-		Movie Movie = MovieRepository.findMovieById(movieId);
+	public MovieDetailDTO findMovieDetailById(String movieId) {
+		Movie movie = MovieRepository.findBySecureId(movieId)
+				.orElseThrow(() -> new BadRequestException("invalid.movieId"));
 		MovieDetailDTO dto = new MovieDetailDTO();
-		List<Actor> actors = Movie.getActors();
+		List<Person> Persons = movie.getActors();
 		StringJoiner joiner = new StringJoiner(", ");
-		for (Actor actor : actors) {
-			joiner.add(actor.getName());
+		for (Person Person : Persons) {
+			joiner.add(Person.getName());
 		}
-		String sActor = joiner.toString();
+		String sPerson = joiner.toString();
 
-		List<Review> Reviews = Movie.getReviews();
+		List<Review> Reviews = movie.getReviews();
 		StringJoiner joiner2 = new StringJoiner(", ");
 		for (Review Review : Reviews) {
-			joiner2.add(Review.getReview());
+			joiner2.add(Review.getComment());
 		}
 		String sReview = joiner2.toString();
-		dto.setMovieId(Movie.getId());
-		dto.setGenre(Movie.getGenre());
-		dto.setActor(sActor);
+		dto.setMovieId(movie.getId());
+		dto.setGenre(movie.getGenre());
+		dto.setActor(sPerson);
 		dto.setReview(sReview);
-		dto.setMovieTitle(Movie.getTitle());
+		dto.setMovieTitle(movie.getTitle());
 		return dto;
 	}
 
@@ -57,22 +59,22 @@ public class MovieServiceImpl implements MovieService {
 		List<Movie> Movies = MovieRepository.findAll();
 		return Movies.stream().map((m) -> {
 			MovieDetailDTO dto = new MovieDetailDTO();
-			List<Actor> actors = m.getActors();
+			List<Person> Persons = m.getActors();
 			StringJoiner joiner = new StringJoiner(", ");
-			for (Actor actor : actors) {
-				joiner.add(actor.getName());
+			for (Person Person : Persons) {
+				joiner.add(Person.getName());
 			}
-			String sActor = joiner.toString();
+			String sPerson = joiner.toString();
 
 			List<Review> Reviews = m.getReviews();
 			StringJoiner joiner2 = new StringJoiner(", ");
 			for (Review Review : Reviews) {
-				joiner2.add(Review.getReview());
+				joiner2.add(Review.getComment());
 			}
 			String sReview = joiner2.toString();
 			dto.setMovieId(m.getId());
 			dto.setGenre(m.getGenre());
-			dto.setActor(sActor);
+			dto.setActor(sPerson);
 			dto.setReview(sReview);
 			dto.setMovieTitle(m.getTitle());
 			return dto;
@@ -81,36 +83,37 @@ public class MovieServiceImpl implements MovieService {
 
 	@Override
 	public void createNewMovie(MovieCreateDTO dto) {
-		Actor Actor = new Actor();
-		Actor.setName(dto.getActor());
+		Person Person = new Person();
+		Person.setName(dto.getActor());
 
 		Review review = new Review();
-		review.setReview(dto.getReview());
+		review.setComment(dto.getReview());
 
 		Movie Movie = new Movie();
 
-		Movie.addActor(Actor);
 		Movie.setTitle(dto.getMovieTitle());
 		Movie.setGenre(dto.getGenre());
-		Movie.addReview(review);
 		MovieRepository.save(Movie);
 	}
 
 	@Override
-	public void updateMovie(Long MovieId, MovieUpdateRequestDTO dto) {
+	public void updateMovie(String movieId, MovieUpdateRequestDTO dto) {
 		// get Movie from repository
-		Movie Movie = MovieRepository.findMovieById(MovieId);
+		Movie movie = MovieRepository.findBySecureId(movieId)
+				.orElseThrow(() -> new BadRequestException("invalid.movieId"));
 		// update
-		Movie.setTitle(dto.getMovieTitle());
+		movie.setTitle(dto.getMovieTitle());
+		movie.setGenre(dto.getGenre());
 		// save
-		MovieRepository.update(Movie);
+		MovieRepository.save(movie);
 
 	}
 
 	@Override
-	public void deleteMovie(Long MovieId) {
-		MovieRepository.delete(MovieId);
-
+	public void deleteMovie(String movieId) {
+		Movie movie = MovieRepository.findBySecureId(movieId)
+				.orElseThrow(() -> new BadRequestException("invalid.movieId"));
+		MovieRepository.delete(movie);
 	}
 
 }

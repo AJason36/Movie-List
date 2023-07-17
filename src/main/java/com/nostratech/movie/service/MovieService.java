@@ -9,14 +9,14 @@ import com.nostratech.movie.dto.MovieUpdateRequestDTO;
 
 public interface MovieService {
 	
-	public MovieDetailDTO findMovieDetailById(Long movieId);
+	public MovieDetailDTO findMovieDetailById(String movieId);
 	
 	public List<MovieDetailDTO> findMovieListDetail();
 	
 	public void createNewMovie(MovieCreateDTO dto);
 	
-	public void updateMovie(Long movieId, MovieUpdateRequestDTO dto);
+	public void updateMovie(String movieId, MovieUpdateRequestDTO dto);
 	
-	public void deleteMovie(Long movieId);
+	public void deleteMovie(String movieId);
 	
 }
