@@ -15,9 +15,9 @@ public interface PersonService {
 	
 	public void createNewPerson(List<PersonCreateRequestDTO> dto);
 	
-	public void updatePerson(String PersonId, PersonUpdateRequestDTO dto);
+	public void updatePerson(String personId, PersonUpdateRequestDTO dto);
 	
-	public void deletePerson(String PersonId);
+	public void deletePerson(String personId);
 
 	public List<Person> findPersons(List<String> personIdList);
 	
@@ -26,6 +26,6 @@ public interface PersonService {
 	public void createAndUpdatePerson(PersonCreateRequestDTO dto);
 	
 	public ResultPageResponseDTO<PersonResponseDTO> findPersonList(Integer pages, 
-			Integer limit, String sortBy, String direction, String PersonName);
+			Integer limit, String sortBy, String direction, String personName);
 	
 }

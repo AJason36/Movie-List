@@ -28,14 +28,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PersonServiceImpl implements PersonService {
 
-	private final PersonRepository PersonRepository;
-	private final MovieRepository MovieRepository;
+	private final PersonRepository personRepository;
 
 	@Override
 	public PersonResponseDTO findPersonById(String id) {
 		// TODO Auto-generated method stub
 		// 1. fetch data from databse
-		Person Person = PersonRepository.findBySecureId(id)
+		Person Person = personRepository.findBySecureId(id)
 				.orElseThrow(() -> new BadRequestException("invalid.PersonId"));
 		// 2. Person -> PersonResponseDTO
 		PersonResponseDTO dto = new PersonResponseDTO();
@@ -54,18 +53,18 @@ public class PersonServiceImpl implements PersonService {
 			return Person;
 		}).collect(Collectors.toList());
 
-		PersonRepository.saveAll(Persons);
+		personRepository.saveAll(Persons);
 	}
 
 	@Override
 	public void updatePerson(String PersonId, PersonUpdateRequestDTO dto) {
-		Person Person = PersonRepository.findBySecureId(PersonId)
+		Person Person = personRepository.findBySecureId(PersonId)
 				.orElseThrow(() -> new BadRequestException("invalid.PersonId"));
 		Person.setName(dto.getName() == null ? Person.getName() : dto.getName());
 		Person.setAge(
 				dto.getAge() == null ? Person.getAge() : dto.getAge());
 
-		PersonRepository.save(Person);
+		personRepository.save(Person);
 	}
 
 	// oracle db -> flashback technologies
@@ -76,23 +75,23 @@ public class PersonServiceImpl implements PersonService {
 		// 2 delete
 		// or
 		// 1 delete (harddelete)
-//		PersonRepository.deleteById(PersonId);
-		Person Person = PersonRepository.findBySecureId(PersonId)
+//		personRepository.deleteById(PersonId);
+		Person Person = personRepository.findBySecureId(PersonId)
 				.orElseThrow(() -> new BadRequestException("invalid.PersonId"));
-		PersonRepository.delete(Person);
+		personRepository.delete(Person);
 		// softdelete
 		// 1. select data deleted=false
-//		Person Person = PersonRepository.findByIdAndDeletedFalse(PersonId)
+//		Person Person = personRepository.findByIdAndDeletedFalse(PersonId)
 //				.orElseThrow(() -> new BadRequestException("invalid.PersonId"));
 //
 //		// 2. update deleted=true
 //		Person.setDeleted(Boolean.TRUE);
-//		PersonRepository.save(Person);
+//		personRepository.save(Person);
 	}
 
 	@Override
 	public List<Person> findPersons(List<String> PersonIdList) {
-		List<Person> Persons = PersonRepository.findBySecureIdIn(PersonIdList);
+		List<Person> Persons = personRepository.findBySecureIdIn(PersonIdList);
 		if (Persons.isEmpty())
 			throw new BadRequestException("Person cant empty");
 		return Persons;
@@ -110,14 +109,14 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public void createAndUpdatePerson(PersonCreateRequestDTO dto) {
-		Person person =  PersonRepository.findByName(dto.getName()).orElse(new Person());
+		Person person =  personRepository.findByName(dto.getName()).orElse(new Person());
 		 if(person.getName()==null) {
 			 person.setName(dto.getName().toLowerCase()); //new 
 		 }
 		 person.setName(dto.getName());
 		 person.setAge(dto.getAge());
 		 
-		 PersonRepository.save(person);
+		 personRepository.save(person);
 	}
 
 	@Override
@@ -126,7 +125,7 @@ public class PersonServiceImpl implements PersonService {
 		personName =  StringUtils.isEmpty(personName) ? "%":personName+"%";
 		Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
 		Pageable pageable = PageRequest.of(pages, limit, sort);
-		Page<Person> pageResult =  PersonRepository.findByNameLikeIgnoreCase(personName, pageable);
+		Page<Person> pageResult =  personRepository.findByNameLikeIgnoreCase(personName, pageable);
 		List<PersonResponseDTO> dtos =  pageResult.stream().map((c)->{
 			PersonResponseDTO dto = new PersonResponseDTO();
 			dto.setName(c.getName());
