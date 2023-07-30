@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nostratech.movie.domain.Actor;
 import com.nostratech.movie.domain.Movie;
 import com.nostratech.movie.domain.Review;
 import com.nostratech.movie.repository.MovieRepository;
