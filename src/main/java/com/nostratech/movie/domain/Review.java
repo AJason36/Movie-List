@@ -1,6 +1,5 @@
 package com.nostratech.movie.domain;
 
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 

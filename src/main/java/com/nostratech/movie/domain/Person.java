@@ -2,7 +2,6 @@ package com.nostratech.movie.domain;
 
 import java.util.List;
 
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -48,16 +47,16 @@ public class Person extends AbstractBaseEntity {
     @ManyToMany
     @JoinTable(
             name = "actor",
-            joinColumns = @JoinColumn(name = "person_id"),
-            inverseJoinColumns = @JoinColumn(name = "movie_id")
+            joinColumns = @JoinColumn(name = "person_id", nullable=false),
+            inverseJoinColumns = @JoinColumn(name = "movie_id", nullable=false)
     )
     private List<Movie> moviesActed;
 
     @ManyToMany
     @JoinTable(
             name = "director",
-            joinColumns = @JoinColumn(name = "person_id"),
-            inverseJoinColumns = @JoinColumn(name = "movie_id")
+            joinColumns = @JoinColumn(name = "person_id", nullable=false),
+            inverseJoinColumns = @JoinColumn(name = "movie_id", nullable= false)
     )
     private List<Movie> moviesDirected;
 }

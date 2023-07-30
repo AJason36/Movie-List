@@ -1,6 +1,5 @@
 package com.nostratech.movie.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
