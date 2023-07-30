@@ -26,38 +26,19 @@ import lombok.AllArgsConstructor;
 @RestController
 public class UsersResource {
 	
-	private final UsersService UsersService;
-		
-	// //Users detail
-	// @GetMapping("/v1/Users/{id}/detail")
-	// public ResponseEntity<UsersResponseDTO> findUsersById(@PathVariable String id){
-	// 	return ResponseEntity.ok().body(UsersService.findUsersById(id));
-	// }
-	
-	// @PostMapping("/v1/Users")
-	// public ResponseEntity<Void> createNewUsers(@RequestBody @Valid List<UsersCreateRequestDTO> dto){
-	// 	UsersService.createNewUsers(dto);
-	// 	return ResponseEntity.created(URI.create("/Users")).build();
-	// }
-	
-	
-	// @PutMapping("/v1/Users/{UsersId}")
-	// public ResponseEntity<Void> updateUsers(@PathVariable String UsersId, 
-	// 	 @RequestBody UsersUpdateRequestDTO dto){
-	// 	UsersService.updateUsers(UsersId, dto);
-	// 	return ResponseEntity.ok().build();
-	// }
-	
-	// @DeleteMapping("/v1/Users/{UsersId}")
-	// public ResponseEntity<Void> deleteUsers(@PathVariable String UsersId){
-	// 	UsersService.deleteUsers(UsersId);
-	// 	return ResponseEntity.ok().build();
-	// }
+	private final UsersService usersService;
+
 	@PostMapping("/v1/user")
-	public ResponseEntity<Void> createAndUpdateUsers(@RequestBody UsersCreateRequestDTO dto){
-		UsersService.createAndUpdateUsers(dto);
+	public ResponseEntity<Void> createUsers(@RequestBody UsersCreateRequestDTO dto) {
+		usersService.createOneUsers(dto);
 		return ResponseEntity.created(URI.create("/v1/user")).build();
-		
+	}
+	
+	@PutMapping("/v1/user/{userId}")
+	public ResponseEntity<Void> updateuser(@PathVariable("userId") String userId, 
+			@RequestBody UsersUpdateRequestDTO dto) {
+		usersService.updateUsers(userId, dto);
+		return ResponseEntity.ok().build();
 	}
 	
 	@GetMapping("/v1/user")
@@ -66,8 +47,14 @@ public class UsersResource {
 			@RequestParam(name = "limit", required = true, defaultValue = "10") Integer limit,
 			@RequestParam(name="sortBy", required = true, defaultValue = "username") String sortBy,
 			@RequestParam(name="direction", required = true, defaultValue = "asc") String direction,
-			@RequestParam(name="username", required = false) String username){
-		return ResponseEntity.ok().body(UsersService.findUsersList(pages, limit, sortBy, direction, username));
+			@RequestParam(name = "username", required = false) String username) {
+		return ResponseEntity.ok().body(usersService.findUsersList(pages, limit, sortBy, direction, username));
+	}
+
+	@DeleteMapping("/v1/user/{userId}")
+	public ResponseEntity<Void> deleteuser(@PathVariable("userId") String userId){
+		usersService.deleteUsers(userId);
+		return ResponseEntity.ok().build();
 	}
 
 }

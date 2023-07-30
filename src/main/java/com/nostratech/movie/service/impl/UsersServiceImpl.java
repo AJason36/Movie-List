@@ -30,82 +30,91 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UsersServiceImpl implements UsersService {
 
-	private final UsersRepository UsersRepository;
-	private final MovieRepository MovieRepository;
+	private final UsersRepository usersRepository;
 
 	@Override
 	public UsersResponseDTO findUsersById(String id) {
 		// TODO Auto-generated method stub
 		// 1. fetch data from databse
-		Users Users = UsersRepository.findBySecureId(id)
-				.orElseThrow(() -> new BadRequestException("invalid.UsersId"));
+		Users users = usersRepository.findBySecureId(id)
+				.orElseThrow(() -> new BadRequestException("invalid.usersId"));
 		// 2. Users -> UsersResponseDTO
 		UsersResponseDTO dto = new UsersResponseDTO();
-		dto.setUsername(Users.getUsername());
-		dto.setEmail(Users.getEmail());
-		dto.setPassword(Users.getPassword());
+		dto.setUsername(users.getUsername());
+		dto.setEmail(users.getEmail());
+		dto.setPassword(users.getPassword());
 		return dto;
 	}
 
 	@Override
 	public void createNewUsers(List<UsersCreateRequestDTO> dtos) {
 
-		List<Users> Userss = dtos.stream().map((dto) -> {
-			Users Users = new Users();
-			Users.setUsername(dto.getUsername());
-			Users.setEmail(dto.getEmail());
-			Users.setPassword(dto.getPassword());
-			return Users;
+		List<Users> userss = dtos.stream().map((dto) -> {
+			Users users = new Users();
+			users.setUsername(dto.getUsername());
+			users.setEmail(dto.getEmail());
+			users.setPassword(dto.getPassword());
+			return users;
 		}).collect(Collectors.toList());
 
-		UsersRepository.saveAll(Userss);
+		usersRepository.saveAll(userss);
 	}
 
 	@Override
-	public void updateUsers(String UsersId, UsersUpdateRequestDTO dto) {
-		Users Users = UsersRepository.findBySecureId(UsersId)
-				.orElseThrow(() -> new BadRequestException("invalid.UsersId"));
-		Users.setUsername(dto.getUsername() == null ? Users.getUsername() : dto.getUsername());
-		Users.setEmail(
-				dto.getEmail() == null ? Users.getEmail() : dto.getEmail());
-		Users.setPassword(
-				dto.getPassword() == null ? Users.getPassword() : dto.getPassword());
-		UsersRepository.save(Users);
+	public void createOneUsers(UsersCreateRequestDTO dto) {
+		Users users = new Users();
+		users.setUsername(dto.getUsername());
+		users.setEmail(dto.getEmail());
+		users.setPassword(dto.getPassword());
+	
+		usersRepository.save(users);
+	}
+
+	@Override
+	public void updateUsers(String usersId, UsersUpdateRequestDTO dto) {
+		Users users = usersRepository.findBySecureId(usersId)
+				.orElseThrow(() -> new BadRequestException("invalid.usersId"));
+		users.setUsername(dto.getUsername() == null ? users.getUsername() : dto.getUsername());
+		users.setEmail(
+				dto.getEmail() == null ? users.getEmail() : dto.getEmail());
+		users.setPassword(
+				dto.getPassword() == null ? users.getPassword() : dto.getPassword());
+		usersRepository.save(users);
 	}
 
 	// oracle db -> flashback technologies
 	// softdelete
 	@Override
-	public void deleteUsers(String UsersId) {
+	public void deleteUsers(String usersId) {
 		// 1 select data
 		// 2 delete
 		// or
 		// 1 delete (harddelete)
-//		UsersRepository.deleteById(UsersId);
-		Users Users = UsersRepository.findBySecureId(UsersId)
-				.orElseThrow(() -> new BadRequestException("invalid.UsersId"));
-		UsersRepository.delete(Users);
+//		usersRepository.deleteById(usersId);
+		Users users = usersRepository.findBySecureId(usersId)
+				.orElseThrow(() -> new BadRequestException("invalid.usersId"));
+		usersRepository.delete(users);
 		// softdelete
 		// 1. select data deleted=false
-//		Users Users = UsersRepository.findByIdAndDeletedFalse(UsersId)
-//				.orElseThrow(() -> new BadRequestException("invalid.UsersId"));
+//		Users Users = usersRepository.findByIdAndDeletedFalse(usersId)
+//				.orElseThrow(() -> new BadRequestException("invalid.usersId"));
 //
 //		// 2. update deleted=true
-//		Users.setDeleted(Boolean.TRUE);
-//		UsersRepository.save(Users);
+//		users.setDeleted(Boolean.TRUE);
+//		usersRepository.save(Users);
 	}
 
 	@Override
-	public List<Users> findUsers(List<String> UsersIdList) {
-		List<Users> Userss = UsersRepository.findBySecureIdIn(UsersIdList);
+	public List<Users> findUsers(List<String> usersIdList) {
+		List<Users> Userss = usersRepository.findBySecureIdIn(usersIdList);
 		if (Userss.isEmpty())
 			throw new BadRequestException("Users cant empty");
 		return Userss;
 	}
 
 	@Override
-	public List<UsersResponseDTO> constructDTO(List<Users> Users) {
-		return Users.stream().map((u)->{
+	public List<UsersResponseDTO> constructDTO(List<Users> users) {
+		return users.stream().map((u)->{
 			UsersResponseDTO dto = new UsersResponseDTO();
 			dto.setUsername(u.getUsername());
 			dto.setEmail(u.getEmail());
@@ -116,15 +125,15 @@ public class UsersServiceImpl implements UsersService {
 
 	@Override
 	public void createAndUpdateUsers(UsersCreateRequestDTO dto) {
-		Users Users =  UsersRepository.findByUsername(dto.getUsername()).orElse(new Users());
-		if(Users.getUsername()==null) {
-			 Users.setUsername(dto.getUsername().toLowerCase()); //new 
+		Users users =  usersRepository.findByUsername(dto.getUsername()).orElse(new Users());
+		if(users.getUsername()==null) {
+			 users.setUsername(dto.getUsername().toLowerCase()); //new 
 		 }
-		Users.setUsername(dto.getUsername());
-		Users.setEmail(dto.getEmail());
-		Users.setPassword(dto.getPassword());
+		users.setUsername(dto.getUsername());
+		users.setEmail(dto.getEmail());
+		users.setPassword(dto.getPassword());
 		 
-		 UsersRepository.save(Users);
+		usersRepository.save(users);
 	}
 
 	@Override
@@ -133,7 +142,7 @@ public class UsersServiceImpl implements UsersService {
 		username =  StringUtils.isEmpty(username) ? "%":username+"%";
 		Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
 		Pageable pageable = PageRequest.of(pages, limit, sort);
-		Page<Users> pageResult =  UsersRepository.findByUsernameLikeIgnoreCase(username, pageable);
+		Page<Users> pageResult =  usersRepository.findByUsernameLikeIgnoreCase(username, pageable);
 		List<UsersResponseDTO> dtos =  pageResult.stream().map((u)->{
 			UsersResponseDTO dto = new UsersResponseDTO();
 			dto.setUsername(u.getUsername());

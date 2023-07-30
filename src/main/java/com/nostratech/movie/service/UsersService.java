@@ -14,18 +14,20 @@ public interface UsersService {
 	public UsersResponseDTO findUsersById(String id);
 	
 	public void createNewUsers(List<UsersCreateRequestDTO> dto);
-	
-	public void updateUsers(String UsersId, UsersUpdateRequestDTO dto);
-	
-	public void deleteUsers(String UsersId);
 
-	public List<Users> findUsers(List<String> UsersIdList);
+	public void createOneUsers(UsersCreateRequestDTO dto);
 	
-	public List<UsersResponseDTO> constructDTO(List<Users> Userss);
+	public void updateUsers(String usersId, UsersUpdateRequestDTO dto);
+	
+	public void deleteUsers(String usersId);
+
+	public List<Users> findUsers(List<String> usersIdList);
+	
+	public List<UsersResponseDTO> constructDTO(List<Users> users);
 
 	public void createAndUpdateUsers(UsersCreateRequestDTO dto);
 	
 	public ResultPageResponseDTO<UsersResponseDTO> findUsersList(Integer pages, 
-			Integer limit, String sortBy, String direction, String UsersName);
+			Integer limit, String sortBy, String direction, String usersName);
 	
 }
