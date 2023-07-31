@@ -90,11 +90,11 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public List<Person> findPersons(List<String> PersonIdList) {
-		List<Person> Persons = personRepository.findBySecureIdIn(PersonIdList);
-		if (Persons.isEmpty())
+	public List<Person> findPersons(List<String> personIdList) {
+		List<Person> persons = personRepository.findBySecureIdIn(personIdList);
+		if (persons.isEmpty())
 			throw new BadRequestException("Person cant empty");
-		return Persons;
+		return persons;
 	}
 
 	@Override

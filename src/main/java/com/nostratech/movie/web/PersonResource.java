@@ -45,7 +45,7 @@ public class PersonResource {
 	}
 	
 	@DeleteMapping("/v1/person/{personId}")
-	public ResponseEntity<Void> deleteperson(@PathVariable("personId") String personId){
+	public ResponseEntity<Void> deletePerson(@PathVariable("personId") String personId){
 		personService.deletePerson(personId);
 		return ResponseEntity.ok().build();
 	}
