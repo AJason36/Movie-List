@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
@@ -41,13 +43,28 @@ public class Movie extends AbstractBaseEntity{
     @Column(name = "title")
     private String title;
 
-    @Column(name = "genre")
-    private String genre;
+    @ManyToMany
+    @JoinTable(
+            name = "genre",
+            joinColumns = @JoinColumn(name = "movie_id", nullable=false),
+            inverseJoinColumns = @JoinColumn(name = "genre_id", nullable= false)
+    )
+    private List<Genres> genreList;
 
-    @ManyToMany(mappedBy = "moviesDirected")
+    @ManyToMany
+    @JoinTable(
+            name = "moviesDirected",
+            joinColumns = @JoinColumn(name = "movie_id", nullable= false),
+            inverseJoinColumns  = @JoinColumn(name = "person_id", nullable=false)
+    )
     private List<Person> directors;
 
-    @ManyToMany(mappedBy = "moviesActed")
+    @ManyToMany
+    @JoinTable(
+            name = "moviesActed",
+            joinColumns  = @JoinColumn(name = "movie_id", nullable=false),
+            inverseJoinColumns = @JoinColumn(name = "person_id", nullable=false)
+    )
     private List<Person> actors;
 
     @OneToMany(mappedBy = "movie")

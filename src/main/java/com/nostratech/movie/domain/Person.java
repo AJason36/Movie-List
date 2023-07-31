@@ -44,19 +44,9 @@ public class Person extends AbstractBaseEntity {
     @Column(name = "age", nullable=false)
     private Integer age;
 
-    @ManyToMany
-    @JoinTable(
-            name = "actor",
-            joinColumns = @JoinColumn(name = "person_id", nullable=false),
-            inverseJoinColumns = @JoinColumn(name = "movie_id", nullable=false)
-    )
+    @ManyToMany(mappedBy = "actors")
     private List<Movie> moviesActed;
 
-    @ManyToMany
-    @JoinTable(
-            name = "director",
-            joinColumns = @JoinColumn(name = "person_id", nullable=false),
-            inverseJoinColumns = @JoinColumn(name = "movie_id", nullable= false)
-    )
+    @ManyToMany(mappedBy = "directors")
     private List<Movie> moviesDirected;
 }

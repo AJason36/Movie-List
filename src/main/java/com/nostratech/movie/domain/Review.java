@@ -47,5 +47,5 @@ public class Review extends AbstractBaseEntity{
     private String comment;
 
     @Column(name = "star")
-    private int star;
+    private Integer star;
 }
