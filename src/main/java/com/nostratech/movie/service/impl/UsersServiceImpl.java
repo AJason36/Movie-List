@@ -3,7 +3,6 @@ package com.nostratech.movie.service.impl;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.apache.catalina.User;
 import org.apache.commons.lang3.StringUtils;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,6 @@ import com.nostratech.movie.dto.UsersResponseDTO;
 import com.nostratech.movie.dto.UsersUpdateRequestDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
 import com.nostratech.movie.exception.BadRequestException;
-import com.nostratech.movie.repository.MovieRepository;
 import com.nostratech.movie.repository.UsersRepository;
 import com.nostratech.movie.service.UsersService;
 import com.nostratech.movie.util.PaginationUtil;
@@ -106,21 +104,19 @@ public class UsersServiceImpl implements UsersService {
 
 	@Override
 	public List<Users> findUsers(List<String> usersIdList) {
-		List<Users> Userss = usersRepository.findBySecureIdIn(usersIdList);
-		if (Userss.isEmpty())
+		List<Users> userss = usersRepository.findBySecureIdIn(usersIdList);
+		if (userss.isEmpty())
 			throw new BadRequestException("Users cant empty");
-		return Userss;
+		return userss;
 	}
 
 	@Override
-	public List<UsersResponseDTO> constructDTO(List<Users> users) {
-		return users.stream().map((u)->{
-			UsersResponseDTO dto = new UsersResponseDTO();
-			dto.setUsername(u.getUsername());
-			dto.setEmail(u.getEmail());
-			dto.setPassword(u.getPassword());
-			return dto;
-		}).collect(Collectors.toList());
+	public UsersResponseDTO constructDTO(Users users) {
+		UsersResponseDTO dto = new UsersResponseDTO();
+		dto.setUsername(users.getUsername());
+		dto.setEmail(users.getEmail());
+		dto.setPassword(users.getPassword());
+		return dto;
 	}
 
 	@Override

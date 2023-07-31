@@ -23,7 +23,7 @@ public interface UsersService {
 
 	public List<Users> findUsers(List<String> usersIdList);
 	
-	public List<UsersResponseDTO> constructDTO(List<Users> users);
+	public UsersResponseDTO constructDTO(Users users);
 
 	public void createAndUpdateUsers(UsersCreateRequestDTO dto);
 	

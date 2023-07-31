@@ -35,7 +35,7 @@ public class UsersResource {
 	}
 	
 	@PutMapping("/v1/user/{userId}")
-	public ResponseEntity<Void> updateuser(@PathVariable("userId") String userId, 
+	public ResponseEntity<Void> updateUser(@PathVariable("userId") String userId, 
 			@RequestBody UsersUpdateRequestDTO dto) {
 		usersService.updateUsers(userId, dto);
 		return ResponseEntity.ok().build();
