@@ -12,14 +12,9 @@ import lombok.Data;
 public class MovieUpdateRequestDTO {
 	
 	@NotBlank
-	private String movieTitle;
-	
-	@NotBlank
-	private String actor;
+	private String title;
 	
 	@NotBlank
 	private String genre;
-	
-	private String review;
 
 }

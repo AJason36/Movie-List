@@ -1,6 +1,7 @@
 package com.nostratech.movie.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -14,15 +15,12 @@ public class MovieDetailDTO implements Serializable {
 	/**
 	 * 
 	 */
-
-	private Long movieId;
-	
-	private String movieTitle;
+	private String movieId;
+	private String title;
 	
 	private String genre;
-	private String actor;
-	
-	private String review;
 
-
+	private List<PersonResponseDTO> actors;
+	private List<PersonResponseDTO> directors;
+	private List<GenreResponseDTO> genres;
 }
