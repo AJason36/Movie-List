@@ -32,7 +32,6 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public PersonResponseDTO findPersonById(String id) {
-		// TODO Auto-generated method stub
 		// 1. fetch data from databse
 		Person Person = personRepository.findBySecureId(id)
 				.orElseThrow(() -> new BadRequestException("invalid.PersonId"));
@@ -71,22 +70,10 @@ public class PersonServiceImpl implements PersonService {
 	// softdelete
 	@Override
 	public void deletePerson(String PersonId) {
-		// 1 select data
-		// 2 delete
-		// or
-		// 1 delete (harddelete)
-//		personRepository.deleteById(PersonId);
 		Person Person = personRepository.findBySecureId(PersonId)
 				.orElseThrow(() -> new BadRequestException("invalid.PersonId"));
 		personRepository.delete(Person);
-		// softdelete
-		// 1. select data deleted=false
-//		Person Person = personRepository.findByIdAndDeletedFalse(PersonId)
-//				.orElseThrow(() -> new BadRequestException("invalid.PersonId"));
-//
-//		// 2. update deleted=true
-//		Person.setDeleted(Boolean.TRUE);
-//		personRepository.save(Person);
+
 	}
 
 	@Override
