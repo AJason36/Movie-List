@@ -22,4 +22,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 	public Optional<Review> findBySecureId(String id);
 
 	public Page<Review> findByCommentLikeIgnoreCase(String comment, Pageable pageable);
+	public Page<Review> findByUserUsernameLikeIgnoreCase(String user, Pageable pageable);
 }

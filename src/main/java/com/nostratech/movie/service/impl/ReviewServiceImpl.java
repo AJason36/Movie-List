@@ -10,11 +10,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.nostratech.movie.domain.Movie;
 import com.nostratech.movie.domain.Review;
+import com.nostratech.movie.domain.Users;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
 import com.nostratech.movie.dto.ReviewCreateRequestDTO;
 import com.nostratech.movie.dto.ReviewResponseDTO;
 import com.nostratech.movie.dto.ReviewUpdateRequestDTO;
+import com.nostratech.movie.dto.UsersResponseDTO;
 import com.nostratech.movie.exception.BadRequestException;
 import com.nostratech.movie.repository.MovieRepository;
 import com.nostratech.movie.repository.ReviewRepository;
@@ -30,16 +33,17 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
-    private final MovieService movieService;
     private final UsersService usersService;
+    private final MovieService movieService;
 
     public ReviewResponseDTO findReviewById(String id) {
         Review review = reviewRepository.findBySecureId(id)
                 .orElseThrow(() -> new BadRequestException("invalid.reviewId"));
                 
         ReviewResponseDTO dto = new ReviewResponseDTO();
-        dto.setMovie(movieService.constructDTO(review.getMovie()));
-        dto.setUsers(usersService.constructDTO(review.getUser()));
+        UsersResponseDTO userDto = new UsersResponseDTO();
+        userDto = usersService.constructDTO(review.getUser());
+        dto.setUsername(userDto.getUsername());
         dto.setComment(review.getComment());
         dto.setStar(review.getStar());
         return dto;
@@ -59,6 +63,11 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = new Review();
         review.setComment(dto.getComment());
         review.setStar(dto.getStar());
+
+        Movie movie = movieService.findMovie(dto.getMovieId());
+        Users user = usersService.findUser(dto.getUserId());
+        review.setMovie(movie);
+        review.setUser(user);
         reviewRepository.save(review);
     }
     public void updateReview(String reviewId, ReviewUpdateRequestDTO dto) {
@@ -103,15 +112,17 @@ public class ReviewServiceImpl implements ReviewService {
 
 	
 	public ResultPageResponseDTO<ReviewResponseDTO> findReviewList(Integer pages, 
-            Integer limit, String sortBy, String direction, String comment) {
-		comment =  StringUtils.isEmpty(comment) ? "%":comment+"%";
+            Integer limit, String sortBy, String direction, String username) {
+		username =  StringUtils.isEmpty(username) ? "%":username+"%";
 		Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
 		Pageable pageable = PageRequest.of(pages, limit, sort);
-		Page<Review> pageResult =  reviewRepository.findByCommentLikeIgnoreCase(comment, pageable);
+		Page<Review> pageResult =  reviewRepository.findByUserUsernameLikeIgnoreCase(username, pageable);
 		List<ReviewResponseDTO> dtos =  pageResult.stream().map((r)->{
 			ReviewResponseDTO dto = new ReviewResponseDTO();
             dto.setComment(r.getComment());
             dto.setStar(r.getStar());
+            Users user = r.getUser();
+            dto.setUsername(user.getUsername());
 			return dto;
 		}).collect(Collectors.toList());
 		return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());      

@@ -40,15 +40,15 @@ public class ReviewResource {
         return ResponseEntity.ok().build();
     }
     
-    @GetMapping("/v1/Review")
+    @GetMapping("/v1/review")
 	public ResponseEntity<ResultPageResponseDTO<ReviewResponseDTO>> findReviewList(
 			@RequestParam(name = "pages", required = true, defaultValue = "0") Integer pages, 
 			@RequestParam(name = "limit", required = true, defaultValue = "10") Integer limit,
-			@RequestParam(name="sortBy", required = true, defaultValue = "comment") String sortBy,
+			@RequestParam(name="sortBy", required = true, defaultValue = "star") String sortBy,
 			@RequestParam(name="direction", required = true, defaultValue = "asc") String direction,
-            @RequestParam(name = "comment", required = false) String comment) // harusnya sort by star
+            @RequestParam(name = "username", required = false) String username) // harusnya sort by star
     {
-        return ResponseEntity.ok().body(reviewService.findReviewList(pages, limit, sortBy, direction, comment));
+        return ResponseEntity.ok().body(reviewService.findReviewList(pages, limit, sortBy, direction, username));
     }
     
     @DeleteMapping("/v1/review/{reviewId}")

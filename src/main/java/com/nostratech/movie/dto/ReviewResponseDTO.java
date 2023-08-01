@@ -21,6 +21,5 @@ public class ReviewResponseDTO implements Serializable{
 	
 	private Integer star;
 
-	private UsersResponseDTO users;
-	private MovieDetailDTO movie;
+	private String username; // tampilin username
 }
