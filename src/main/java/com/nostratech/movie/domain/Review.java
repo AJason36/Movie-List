@@ -36,16 +36,17 @@ public class Review extends AbstractBaseEntity{
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable=false)
     private Users user;
 
     @ManyToOne
-    @JoinColumn(name = "movie_id")
+    @JoinColumn(name = "movie_id", nullable=false)
     private Movie movie;
 
-    @Column(name = "comment", columnDefinition = "varchar(255)")
+    @Column(name = "star", nullable=false)
+    private Integer star;
+    
+    @Column(name = "comment", columnDefinition = "varchar(500)")
     private String comment;
 
-    @Column(name = "star")
-    private Integer star;
 }

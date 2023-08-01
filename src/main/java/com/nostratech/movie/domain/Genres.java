@@ -24,18 +24,16 @@ import lombok.Data;
 @AllArgsConstructor
 @Entity
 @Table(name = "genres")
-// @DynamicUpdate
 @SQLDelete(sql = "UPDATE genres SET deleted = true WHERE id = ?")
 @Where(clause = "deleted=false")
-public class Genres {
+public class Genres extends AbstractBaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genre_generator")
-    @SequenceGenerator (name = "genre_generator", sequenceName = "genre_id_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(name = "genre", unique=true, nullable=false)
     private String genre;
 
-    @ManyToMany(mappedBy="genreList")
+    @ManyToMany(mappedBy="genre")
     private List<Movie> moviesGenre;
 }

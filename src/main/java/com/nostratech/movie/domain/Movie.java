@@ -26,55 +26,33 @@ import lombok.Data;
 @AllArgsConstructor
 @Entity
 @Table(name = "movie")
-// @DynamicUpdate
 @SQLDelete(sql = "UPDATE movie SET deleted = true WHERE id = ?")
 @Where(clause = "deleted=false")
-public class Movie extends AbstractBaseEntity{
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -2957072252990334899L;
+public class Movie extends AbstractBaseEntity {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -2957072252990334899L;
 
-	@Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "movie_generator")
-    @SequenceGenerator (name = "movie_generator", sequenceName = "movie_id_seq")
-    private Long id;
-    
-    @Column(name = "title")
-    private String title;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    @ManyToMany
-    @JoinTable(
-            name = "genre",
-            joinColumns = @JoinColumn(name = "movie_id", nullable=false),
-            inverseJoinColumns = @JoinColumn(name = "genre_id", nullable= false)
-    )
-    private List<Genres> genreList;
+        @Column(name = "title", nullable = false)
+        private String title;
 
-    @ManyToMany
-    @JoinTable(
-            name = "moviesDirected",
-            joinColumns = @JoinColumn(name = "movie_id", nullable= false),
-            inverseJoinColumns  = @JoinColumn(name = "person_id", nullable=false)
-    )
-    private List<Person> directors;
+        @ManyToMany
+        @JoinTable(name = "movies_genre", joinColumns = @JoinColumn(name = "movie_id", nullable = false), inverseJoinColumns = @JoinColumn(name = "genre_id", nullable = false))
+        private List<Genres> genre;
 
-    @ManyToMany
-    @JoinTable(
-            name = "moviesActed",
-            joinColumns  = @JoinColumn(name = "movie_id", nullable=false),
-            inverseJoinColumns = @JoinColumn(name = "person_id", nullable=false)
-    )
-    private List<Person> actors;
+        @ManyToMany
+        @JoinTable(name = "moviesDirected", joinColumns = @JoinColumn(name = "movie_id", nullable = false), inverseJoinColumns = @JoinColumn(name = "person_id", nullable = false))
+        private List<Person> directors;
 
-    @OneToMany(mappedBy = "movie")
-    private List<Review> reviews;
-    
-    // public void addActor(Actor actor) {
-    //     actors.add(actor);
-    // }
-    
-    // public void addReview(Review review) {
-    //     reviews.add(review);
-    // }
+        @ManyToMany
+        @JoinTable(name = "moviesActed", joinColumns = @JoinColumn(name = "movie_id", nullable = false), inverseJoinColumns = @JoinColumn(name = "person_id", nullable = false))
+        private List<Person> actors;
+
+        @OneToMany(mappedBy = "movie")
+        private List<Review> reviews;
 }
