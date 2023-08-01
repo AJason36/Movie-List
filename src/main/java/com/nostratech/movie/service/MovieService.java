@@ -12,6 +12,8 @@ import com.nostratech.movie.dto.ResultPageResponseDTO;
 public interface MovieService {
 	
 	public MovieDetailDTO findMovieDetailById(String movieId);
+
+	public Movie findMovie(String movieId);
 	
 	public List<MovieDetailDTO> findMovieListDetail();
 	

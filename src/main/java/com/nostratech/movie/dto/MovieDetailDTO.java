@@ -18,8 +18,6 @@ public class MovieDetailDTO implements Serializable {
 	private String movieId;
 	private String title;
 	
-	private String genre;
-
 	private List<PersonResponseDTO> actors;
 	private List<PersonResponseDTO> directors;
 	private List<GenreResponseDTO> genres;

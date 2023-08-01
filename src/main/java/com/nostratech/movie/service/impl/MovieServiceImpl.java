@@ -1,8 +1,8 @@
 package com.nostratech.movie.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.StringJoiner;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -14,15 +14,15 @@ import org.springframework.stereotype.Service;
 import com.nostratech.movie.service.GenreService;
 import com.nostratech.movie.service.MovieService;
 import com.nostratech.movie.service.PersonService;
-import com.nostratech.movie.service.ReviewService;
 import com.nostratech.movie.util.PaginationUtil;
 import com.nostratech.movie.domain.Genres;
 import com.nostratech.movie.domain.Movie;
 import com.nostratech.movie.domain.Person;
-import com.nostratech.movie.domain.Review;
+import com.nostratech.movie.dto.GenreResponseDTO;
 import com.nostratech.movie.dto.MovieCreateDTO;
 import com.nostratech.movie.dto.MovieDetailDTO;
 import com.nostratech.movie.dto.MovieUpdateRequestDTO;
+import com.nostratech.movie.dto.PersonResponseDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
 import com.nostratech.movie.exception.BadRequestException;
 import com.nostratech.movie.repository.MovieRepository;
@@ -47,7 +47,7 @@ public class MovieServiceImpl implements MovieService {
 				.orElseThrow(() -> new BadRequestException("invalid.movieId"));
 		MovieDetailDTO dto = new MovieDetailDTO();
 		dto.setMovieId(movie.getSecureId());
-		dto.setGenres(genreService.constructDTO(movie.getGenreList()));
+		dto.setGenres(genreService.constructDTO(movie.getGenre()));
 		dto.setTitle(movie.getTitle());
 		dto.setActors(actorService.constructDTO(movie.getActors()));
 		dto.setDirectors(directorService.constructDTO(movie.getDirectors()));
@@ -74,9 +74,20 @@ public class MovieServiceImpl implements MovieService {
 		movie.setTitle(dto.getTitle());
 		movie.setActors(actors);
 		movie.setDirectors(directors);
-		movie.setGenreList(genres);
+		movie.setGenre(genres);
 		movieRepository.save(movie);
 	}
+
+	@Override
+	public Movie findMovie(String movieId) {
+		Optional<Movie> movieOptional = movieRepository.findBySecureId(movieId);
+		if (movieOptional.isPresent()) {
+			return movieOptional.get();
+		} else {
+			throw new BadRequestException("Movie not found");
+		}
+	}
+
 
 	@Override
 	public void updateMovie(String movieId, MovieUpdateRequestDTO dto) {
@@ -95,23 +106,52 @@ public class MovieServiceImpl implements MovieService {
 		Movie movie = movieRepository.findBySecureId(movieId)
 				.orElseThrow(() -> new BadRequestException("invalid.movieId"));
 		movieRepository.delete(movie);
+		// delete constraint/softdelete
 	}
 
 	@Override
 	public ResultPageResponseDTO<MovieDetailDTO> findMovieList(Integer pages, Integer limit, String sortBy,
-			String direction, String movieTitle) {
+		String direction, String movieTitle) {
 		movieTitle = StringUtils.isEmpty(movieTitle) ? "%" : movieTitle + "%";
 		Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
 		Pageable pageable = PageRequest.of(pages, limit, sort);
 		Page<Movie> pageResult = movieRepository.findByTitleLikeIgnoreCase(movieTitle, pageable);
 		List<MovieDetailDTO> dtos = pageResult.stream().map((m) -> {
 			MovieDetailDTO dto = new MovieDetailDTO();
+			dto.setMovieId(m.getSecureId()); // Set the movieId using the getId() method of the Movie entity
 			dto.setTitle(m.getTitle());
+
+			// Map the genres to a list of GenreResponseDTO
+			List<GenreResponseDTO> genreDTOs = m.getGenre().stream().map(genre -> {
+				GenreResponseDTO genreDTO = new GenreResponseDTO();
+				genreDTO.setGenre(genre.getGenre());
+				return genreDTO;
+			}).collect(Collectors.toList());
+			dto.setGenres(genreDTOs);
+
+			// Map the actors to a list of PersonResponseDTO
+			List<PersonResponseDTO> actorDTOs = m.getActors().stream().map(actor -> {
+				PersonResponseDTO actorDTO = new PersonResponseDTO();
+				actorDTO.setName(actor.getName());
+				actorDTO.setAge(actor.getAge());
+				return actorDTO;
+			}).collect(Collectors.toList());
+			dto.setActors(actorDTOs);
+
+			// Map the directors to a list of PersonResponseDTO
+			List<PersonResponseDTO> directorDTOs = m.getDirectors().stream().map(director -> {
+				PersonResponseDTO directorDTO = new PersonResponseDTO();
+				directorDTO.setName(director.getName());
+				directorDTO.setAge(director.getAge());
+				return directorDTO;
+			}).collect(Collectors.toList());
+			dto.setDirectors(directorDTOs);
+
 			return dto;
 		}).collect(Collectors.toList());
 		return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
 	}
-	
+
 	@Override
 	public MovieDetailDTO constructDTO(Movie movie) {
 		MovieDetailDTO dto = new MovieDetailDTO();
