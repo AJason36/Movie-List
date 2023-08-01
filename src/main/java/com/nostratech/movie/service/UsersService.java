@@ -22,6 +22,8 @@ public interface UsersService {
 	public void deleteUsers(String usersId);
 
 	public List<Users> findUsers(List<String> usersIdList);
+
+	public Users findUser(String usersId);
 	
 	public UsersResponseDTO constructDTO(Users users);
 

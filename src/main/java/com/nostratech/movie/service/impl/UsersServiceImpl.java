@@ -2,6 +2,7 @@ package com.nostratech.movie.service.impl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class UsersServiceImpl implements UsersService {
 		UsersResponseDTO dto = new UsersResponseDTO();
 		dto.setUsername(users.getUsername());
 		dto.setEmail(users.getEmail());
-		dto.setPassword(users.getPassword());
+//		dto.setPassword(users.getPassword());
 		return dto;
 	}
 
@@ -92,14 +93,7 @@ public class UsersServiceImpl implements UsersService {
 		Users users = usersRepository.findBySecureId(usersId)
 				.orElseThrow(() -> new BadRequestException("invalid.usersId"));
 		usersRepository.delete(users);
-		// softdelete
-		// 1. select data deleted=false
-//		Users Users = usersRepository.findByIdAndDeletedFalse(usersId)
-//				.orElseThrow(() -> new BadRequestException("invalid.usersId"));
-//
-//		// 2. update deleted=true
-//		users.setDeleted(Boolean.TRUE);
-//		usersRepository.save(Users);
+		// kasi constraint  commnet
 	}
 
 	@Override
@@ -135,11 +129,11 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	public ResultPageResponseDTO<UsersResponseDTO> findUsersList(Integer pages, Integer limit, String sortBy,
 			String direction, String username) {
-		username =  StringUtils.isEmpty(username) ? "%":username+"%";
+		username = StringUtils.isEmpty(username) ? "%" : username + "%";
 		Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
 		Pageable pageable = PageRequest.of(pages, limit, sort);
-		Page<Users> pageResult =  usersRepository.findByUsernameLikeIgnoreCase(username, pageable);
-		List<UsersResponseDTO> dtos =  pageResult.stream().map((u)->{
+		Page<Users> pageResult = usersRepository.findByUsernameLikeIgnoreCase(username, pageable);
+		List<UsersResponseDTO> dtos = pageResult.stream().map((u) -> {
 			UsersResponseDTO dto = new UsersResponseDTO();
 			dto.setUsername(u.getUsername());
 			dto.setEmail(u.getEmail());
@@ -147,5 +141,15 @@ public class UsersServiceImpl implements UsersService {
 			return dto;
 		}).collect(Collectors.toList());
 		return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
+	}
+	
+	@Override
+	public Users findUser(String userId) {
+		Optional<Users> userOpt = usersRepository.findBySecureId(userId);
+		if (userOpt.isPresent()) {
+			return userOpt.get();
+		} else {
+			throw new BadRequestException("Users not found");
+		}
 	}
 }
