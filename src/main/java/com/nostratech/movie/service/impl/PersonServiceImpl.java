@@ -70,10 +70,15 @@ public class PersonServiceImpl implements PersonService {
 	// softdelete
 	@Override
 	public void deletePerson(String PersonId) {
-		Person Person = personRepository.findBySecureId(PersonId)
+		Person person = personRepository.findBySecureId(PersonId)
 				.orElseThrow(() -> new BadRequestException("invalid.PersonId"));
-		personRepository.delete(Person);
 
+		// Check if the person is associated with any movie as actor or director
+		if (!person.getMoviesActed().isEmpty() || !person.getMoviesDirected().isEmpty()) {
+			throw new BadRequestException("Cannot delete the person, still in movie");
+		}
+	
+		personRepository.delete(person);
 	}
 
 	@Override

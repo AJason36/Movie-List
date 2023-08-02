@@ -100,11 +100,23 @@ public class MovieServiceImpl implements MovieService {
 		movieRepository.save(movie);
 
 	}
-
+	
 	@Override
 	public void deleteMovie(String movieId) {
 		Movie movie = movieRepository.findBySecureId(movieId)
 				.orElseThrow(() -> new BadRequestException("invalid.movieId"));
+		// Remove the movie from the lists of actors and directors in the Person entity
+		for (Person actor : movie.getActors()) {
+			actor.getMoviesActed().remove(movie);
+		}
+		for (Person director : movie.getDirectors()) {
+			director.getMoviesDirected().remove(movie);
+		}
+	
+		// Remove the movie from the lists of moviesGenre in the Genres entity
+		for (Genres genre : movie.getGenre()) {
+			genre.getMoviesGenre().remove(movie);
+		}
 		movieRepository.delete(movie);
 		// delete constraint/softdelete
 	}

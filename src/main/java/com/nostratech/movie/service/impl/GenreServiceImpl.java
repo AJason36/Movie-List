@@ -57,6 +57,9 @@ public class GenreServiceImpl implements GenreService {
     public void deleteGenre(String genreId) {
         Genres genre = genreRepository.findBySecureId(genreId)
                 .orElseThrow(() -> new BadRequestException("invalid.genreId"));
+        if (!genre.getMoviesGenre().isEmpty()) {
+            throw new BadRequestException("Cannot delete the genre as it is associated with movies");
+        }        
         genreRepository.delete(genre);
     }
 
