@@ -20,10 +20,12 @@ import com.nostratech.movie.dto.ReviewResponseDTO;
 import com.nostratech.movie.dto.ReviewUpdateRequestDTO;
 import com.nostratech.movie.service.ReviewService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
+@SecurityRequirement(name="bearerAuth")
 public class ReviewResource {
     private final ReviewService reviewService; 
     

@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.nostratech.movie.domain.Genres;
-import com.nostratech.movie.domain.Person;
 import com.nostratech.movie.dto.GenreCreateRequestDTO;
 import com.nostratech.movie.dto.GenreResponseDTO;
 import com.nostratech.movie.dto.GenreUpdateRequestDTO;
@@ -21,10 +20,12 @@ import com.nostratech.movie.service.GenreService;
 import com.nostratech.movie.util.PaginationUtil;
 
 import io.micrometer.common.util.StringUtils;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
+@SecurityRequirement(name="bearerAuth")
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
     public GenreResponseDTO findGenreById(String genreId) {

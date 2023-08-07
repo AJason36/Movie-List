@@ -19,11 +19,13 @@ import com.nostratech.movie.dto.PersonUpdateRequestDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
 import com.nostratech.movie.service.PersonService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
+@SecurityRequirement(name="bearerAuth")
 public class PersonResource {
 	
 	private final PersonService personService;

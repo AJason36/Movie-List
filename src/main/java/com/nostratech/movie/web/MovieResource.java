@@ -22,12 +22,14 @@ import com.nostratech.movie.dto.MovieUpdateRequestDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
 import com.nostratech.movie.service.MovieService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AllArgsConstructor
 @RestController
+@SecurityRequirement(name="bearerAuth")
 public class MovieResource {
 	
 	private final MovieService movieService;
