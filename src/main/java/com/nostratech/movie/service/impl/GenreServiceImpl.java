@@ -25,7 +25,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-@SecurityRequirement(name="bearerAuth")
+// @SecurityRequirement(name="bearerAuth")
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
     public GenreResponseDTO findGenreById(String genreId) {

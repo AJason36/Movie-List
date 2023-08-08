@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
 @RestController
-@SecurityRequirement(name="bearerAuth")
+// @SecurityRequirement(name="bearerAuth")
 public class HelloResources {
 	
 	Logger log = LoggerFactory.getLogger(HelloResources.class);

@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@SecurityRequirement(name="bearerAuth")
+// @SecurityRequirement(name="bearerAuth")
 public class MovieResource {
 	
 	private final MovieService movieService;

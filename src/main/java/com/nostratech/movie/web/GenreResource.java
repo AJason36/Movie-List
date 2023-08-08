@@ -26,7 +26,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-@SecurityRequirement(name="bearerAuth")
+// @SecurityRequirement(name="bearerAuth")
 public class GenreResource {
 	
 	private final GenreService genreService;
