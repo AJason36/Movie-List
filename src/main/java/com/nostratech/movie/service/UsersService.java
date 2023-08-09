@@ -2,6 +2,8 @@ package com.nostratech.movie.service;
 
 import java.util.List;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 import com.nostratech.movie.domain.Users;
 import com.nostratech.movie.dto.UsersCreateRequestDTO;
 import com.nostratech.movie.dto.UsersResponseDTO;
@@ -9,7 +11,7 @@ import com.nostratech.movie.dto.UsersUpdateRequestDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
 
 
-public interface UsersService {
+public interface UsersService extends UserDetailsService {
 	
 	public UsersResponseDTO findUsersById(String id);
 	

@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nostratech.movie.annotation.LogThisMethod;
 import com.nostratech.movie.dto.PersonCreateRequestDTO;
 import com.nostratech.movie.dto.PersonResponseDTO;
 import com.nostratech.movie.dto.PersonUpdateRequestDTO;
@@ -29,13 +31,16 @@ import lombok.AllArgsConstructor;
 public class PersonResource {
 	
 	private final PersonService personService;
-		
+	
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/v1/person")
-	public ResponseEntity<Void> createAndUpdateperson(@RequestBody PersonCreateRequestDTO dto){
+	public ResponseEntity<Void> createAndUpdateperson(@RequestBody PersonCreateRequestDTO dto) {
 		personService.createAndUpdatePerson(dto);
-		return ResponseEntity.created(URI.create("/v1/person")).build();	
+		return ResponseEntity.created(URI.create("/v1/person")).build();
 	}
 	
+	@PreAuthorize("isAuthenticated()")
+	@LogThisMethod
 	@GetMapping("/v1/person")
 	public ResponseEntity<ResultPageResponseDTO<PersonResponseDTO>> findpersonList(
 			@RequestParam(name = "pages", required = true, defaultValue = "0") Integer pages, 
@@ -46,6 +51,7 @@ public class PersonResource {
 		return ResponseEntity.ok().body(personService.findPersonList(pages, limit, sortBy, direction, personName));
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/v1/person/{personId}")
 	public ResponseEntity<Void> deletePerson(@PathVariable("personId") String personId){
 		personService.deletePerson(personId);

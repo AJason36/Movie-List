@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.nostratech.movie.domain.Users;
@@ -151,5 +153,12 @@ public class UsersServiceImpl implements UsersService {
 		} else {
 			throw new BadRequestException("Users not found");
 		}
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+		return usersRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("invalid username"));
 	}
 }
