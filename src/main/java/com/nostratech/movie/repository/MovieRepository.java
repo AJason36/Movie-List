@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.nostratech.movie.domain.Movie;
+import com.nostratech.movie.dto.MovieQueryDTO;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 	public Optional<Movie> findById(Long id);
@@ -30,9 +31,16 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
 	public Page<Movie> findByTitleLikeIgnoreCase(String movieTitle, Pageable pageable);
 
-	@Query("SELECT DISTINCT m FROM Movie m "
-			+ "INNER JOIN Genres g "
+	// @Query("SELECT DISTINCT m FROM Movie m "
+	// 		+ "INNER JOIN Genres g "
+	// 		+ "WHERE LOWER(m.title) LIKE LOWER(CONCAT('%', :movieTitle, '%')) "
+	// 		+ "AND LOWER(g.genre) LIKE LOWER(CONCAT('%', :genre, '%'))")
+	// public Page<Movie> findMovieList(String movieTitle, String genre, Pageable pageable);
+
+	@Query("SELECT DISTINCT new com.nostratech.movie.dto.MovieQueryDTO(m.id, m.secureId m.title)" +
+			" FROM Movie m "
+			+ "INNER JOIN Genres g ON g.id = m.genre.id"
 			+ "WHERE LOWER(m.title) LIKE LOWER(CONCAT('%', :movieTitle, '%')) "
 			+ "AND LOWER(g.genre) LIKE LOWER(CONCAT('%', :genre, '%'))")
-	public Page<Movie> findMovieList(String movieTitle, String genre, Pageable pageable);
+	public Page<MovieQueryDTO> findMovieList(String movieTitle, String genre, Pageable pageable);
 }
