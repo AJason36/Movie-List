@@ -1,6 +1,7 @@
 package com.nostratech.movie.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.nostratech.movie.domain.Person;
 import com.nostratech.movie.dto.PersonCreateRequestDTO;
@@ -28,4 +29,7 @@ public interface PersonService {
 	public ResultPageResponseDTO<PersonResponseDTO> findPersonList(Integer pages, 
 			Integer limit, String sortBy, String direction, String personName);
 	
+	public Map<Long, List<String>> findActorsMaps(List<Long> movieIdList);
+	public Map<Long, List<String>> findDirectorsMaps(List<Long> movieIdList);
+
 }

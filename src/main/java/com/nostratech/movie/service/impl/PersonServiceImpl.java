@@ -1,7 +1,10 @@
 package com.nostratech.movie.service.impl;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import java.util.stream.Collectors;
 
@@ -12,12 +15,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.nostratech.movie.domain.Person;
+import com.nostratech.movie.dto.ActorQueryDTO;
+import com.nostratech.movie.dto.DirectorQueryDTO;
+import com.nostratech.movie.dto.GenreQueryDTO;
 import com.nostratech.movie.dto.PersonCreateRequestDTO;
 import com.nostratech.movie.dto.PersonResponseDTO;
 import com.nostratech.movie.dto.PersonUpdateRequestDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
 import com.nostratech.movie.exception.BadRequestException;
-import com.nostratech.movie.repository.MovieRepository;
 import com.nostratech.movie.repository.PersonRepository;
 import com.nostratech.movie.service.PersonService;
 import com.nostratech.movie.util.PaginationUtil;
@@ -77,7 +82,7 @@ public class PersonServiceImpl implements PersonService {
 		if (!person.getMoviesActed().isEmpty() || !person.getMoviesDirected().isEmpty()) {
 			throw new BadRequestException("Cannot delete the person, still in movie");
 		}
-	
+
 		personRepository.delete(person);
 	}
 
@@ -91,7 +96,7 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public List<PersonResponseDTO> constructDTO(List<Person> persons) {
-		return persons.stream().map((p)->{
+		return persons.stream().map((p) -> {
 			PersonResponseDTO dto = new PersonResponseDTO();
 			dto.setName(p.getName());
 			dto.setAge(p.getAge());
@@ -101,24 +106,24 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public void createAndUpdatePerson(PersonCreateRequestDTO dto) {
-		Person person =  personRepository.findByName(dto.getName()).orElse(new Person());
-		 if(person.getName()==null) {
-			 person.setName(dto.getName().toLowerCase()); //new 
-		 }
-		 person.setName(dto.getName());
-		 person.setAge(dto.getAge());
-		 
-		 personRepository.save(person);
+		Person person = personRepository.findByName(dto.getName()).orElse(new Person());
+		if (person.getName() == null) {
+			person.setName(dto.getName().toLowerCase()); //new 
+		}
+		person.setName(dto.getName());
+		person.setAge(dto.getAge());
+
+		personRepository.save(person);
 	}
 
 	@Override
 	public ResultPageResponseDTO<PersonResponseDTO> findPersonList(Integer pages, Integer limit, String sortBy,
 			String direction, String personName) {
-		personName =  StringUtils.isEmpty(personName) ? "%":personName+"%";
+		personName = StringUtils.isEmpty(personName) ? "%" : personName + "%";
 		Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
 		Pageable pageable = PageRequest.of(pages, limit, sort);
-		Page<Person> pageResult =  personRepository.findByNameLikeIgnoreCase(personName, pageable);
-		List<PersonResponseDTO> dtos =  pageResult.stream().map((c)->{
+		Page<Person> pageResult = personRepository.findByNameLikeIgnoreCase(personName, pageable);
+		List<PersonResponseDTO> dtos = pageResult.stream().map((c) -> {
 			PersonResponseDTO dto = new PersonResponseDTO();
 			dto.setName(c.getName());
 			dto.setAge(c.getAge());
@@ -126,4 +131,39 @@ public class PersonServiceImpl implements PersonService {
 		}).collect(Collectors.toList());
 		return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
 	}
+
+	@Override
+	public Map<Long, List<String>> findActorsMaps(List<Long> movieIdList) {
+		List<ActorQueryDTO> queryList =  personRepository.findActorsByMovieIdList(movieIdList);
+		Map<Long, List<String>> actorMaps = new HashMap<>();
+		List<String> actorNameList = null;
+		for(ActorQueryDTO q:queryList) {
+			if(!actorMaps.containsKey(q.getMovieId())) {
+				actorNameList = new ArrayList<>();
+			}else {
+				actorNameList = actorMaps.get(q.getMovieId());
+			}
+			actorNameList.add(q.getActorName());
+			actorMaps.put(q.getMovieId(), actorNameList);
+		}
+		return actorMaps;
+	}
+
+	@Override
+	public Map<Long, List<String>> findDirectorsMaps(List<Long> movieIdList) {
+		List<DirectorQueryDTO> queryList =  personRepository.findDirectorsByMovieIdList(movieIdList);
+		Map<Long, List<String>> directorMaps = new HashMap<>();
+		List<String> directorNameList = null;
+		for(DirectorQueryDTO q:queryList) {
+			if(!directorMaps.containsKey(q.getMovieId())) {
+				directorNameList = new ArrayList<>();
+			}else {
+				directorNameList = directorMaps.get(q.getMovieId());
+			}
+			directorNameList.add(q.getDirectorName());
+			directorMaps.put(q.getMovieId(), directorNameList);
+		}
+		return directorMaps;
+	}
+
 }
