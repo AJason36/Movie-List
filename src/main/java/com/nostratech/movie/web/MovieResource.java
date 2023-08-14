@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nostratech.movie.dto.MovieDetailDTO;
+import com.nostratech.movie.dto.MovieListResponseDTO;
 import com.nostratech.movie.dto.MovieCreateDTO;
 import com.nostratech.movie.dto.MovieUpdateRequestDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
@@ -53,13 +54,16 @@ public class MovieResource {
 	}
 	
 	@GetMapping("/v1/movie")
-	public ResponseEntity<ResultPageResponseDTO<MovieDetailDTO>> findMovieList(
+	public ResponseEntity<ResultPageResponseDTO<MovieListResponseDTO>> findMovieList(
 		@RequestParam(name = "pages", required = true, defaultValue = "0") Integer pages, 
 			@RequestParam(name = "limit", required = true, defaultValue = "10") Integer limit,
 			@RequestParam(name="sortBy", required = true, defaultValue = "title") String sortBy,
 			@RequestParam(name="direction", required = true, defaultValue = "asc") String direction,
-			@RequestParam(name = "title", required = false) String title) {
-		return ResponseEntity.ok().body(movieService.findMovieList(pages, limit, sortBy, direction, title));
+			@RequestParam(name = "title", required = false, defaultValue = "") String title,
+			@RequestParam(name = "genre", required = false, defaultValue = "") String genre,
+			@RequestParam(name = "actorName", required = false, defaultValue = "") String actorName,
+			@RequestParam(name = "directorName", required = false, defaultValue = "") String directorName) {
+		return ResponseEntity.ok().body(movieService.findMovieList(pages, limit, sortBy, direction, title, genre, actorName, directorName));
 	}
 	
 	//PUT /movie

@@ -1,6 +1,7 @@
 package com.nostratech.movie.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,8 @@ import com.nostratech.movie.domain.Person;
 import com.nostratech.movie.dto.GenreResponseDTO;
 import com.nostratech.movie.dto.MovieCreateDTO;
 import com.nostratech.movie.dto.MovieDetailDTO;
+import com.nostratech.movie.dto.MovieListResponseDTO;
+import com.nostratech.movie.dto.MovieQueryDTO;
 import com.nostratech.movie.dto.MovieUpdateRequestDTO;
 import com.nostratech.movie.dto.PersonResponseDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
@@ -88,7 +91,6 @@ public class MovieServiceImpl implements MovieService {
 		}
 	}
 
-
 	@Override
 	public void updateMovie(String movieId, MovieUpdateRequestDTO dto) {
 		// get Movie from repository
@@ -100,7 +102,7 @@ public class MovieServiceImpl implements MovieService {
 		movieRepository.save(movie);
 
 	}
-	
+
 	@Override
 	public void deleteMovie(String movieId) {
 		Movie movie = movieRepository.findBySecureId(movieId)
@@ -112,7 +114,7 @@ public class MovieServiceImpl implements MovieService {
 		for (Person director : movie.getDirectors()) {
 			director.getMoviesDirected().remove(movie);
 		}
-	
+
 		// Remove the movie from the lists of moviesGenre in the Genres entity
 		for (Genres genre : movie.getGenre()) {
 			genre.getMoviesGenre().remove(movie);
@@ -122,55 +124,85 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
-	public ResultPageResponseDTO<MovieDetailDTO> findMovieList(Integer pages, Integer limit, String sortBy,
-		String direction, String movieTitle) {
+	public ResultPageResponseDTO<MovieListResponseDTO> findMovieList(Integer pages, Integer limit, String sortBy,
+			String direction, String movieTitle, String genre, String actorName, String directorName) {
 		movieTitle = StringUtils.isEmpty(movieTitle) ? "%" : movieTitle + "%";
 		Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
 		Pageable pageable = PageRequest.of(pages, limit, sort);
-		Page<Movie> pageResult = movieRepository.findByTitleLikeIgnoreCase(movieTitle, pageable);
-		List<MovieDetailDTO> dtos = pageResult.stream().map((m) -> {
-			MovieDetailDTO dto = new MovieDetailDTO();
-			dto.setMovieId(m.getSecureId()); // Set the movieId using the getId() method of the Movie entity
+		Page<MovieQueryDTO> pageResult = movieRepository.findMovieList(movieTitle, genre, actorName, directorName,
+				pageable);
+		List<Long> idList = pageResult.stream().map(m -> m.getMovieId()).collect(Collectors.toList());
+		Map<Long, List<String>> genreMap = genreService.findGenreMaps(idList);
+		Map<Long, List<String>> actorMap = actorService.findActorsMaps(idList);
+		Map<Long, List<String>> directorMap = directorService.findDirectorsMaps(idList);
+		List<MovieListResponseDTO> dtos = pageResult.stream().map((m) -> {
+			MovieListResponseDTO dto = new MovieListResponseDTO();
+			dto.setMovieId(m.getSecureId());
 			dto.setTitle(m.getTitle());
-
-			// Map the genres to a list of GenreResponseDTO
-			List<GenreResponseDTO> genreDTOs = m.getGenre().stream().map(genre -> {
-				GenreResponseDTO genreDTO = new GenreResponseDTO();
-				genreDTO.setGenre(genre.getGenre());
-				return genreDTO;
-			}).collect(Collectors.toList());
-			dto.setGenres(genreDTOs);
-
-			// Map the actors to a list of PersonResponseDTO
-			List<PersonResponseDTO> actorDTOs = m.getActors().stream().map(actor -> {
-				PersonResponseDTO actorDTO = new PersonResponseDTO();
-				actorDTO.setName(actor.getName());
-				actorDTO.setAge(actor.getAge());
-				return actorDTO;
-			}).collect(Collectors.toList());
-			dto.setActors(actorDTOs);
-
-			// Map the directors to a list of PersonResponseDTO
-			List<PersonResponseDTO> directorDTOs = m.getDirectors().stream().map(director -> {
-				PersonResponseDTO directorDTO = new PersonResponseDTO();
-				directorDTO.setName(director.getName());
-				directorDTO.setAge(director.getAge());
-				return directorDTO;
-			}).collect(Collectors.toList());
-			dto.setDirectors(directorDTOs);
-
+			dto.setActors(actorMap.get(m.getMovieId()));
+			dto.setDirectors(directorMap.get(m.getMovieId()));
+			dto.setGenres(genreMap.get(m.getMovieId()));
 			return dto;
 		}).collect(Collectors.toList());
 		return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
 	}
 
-	@Override
-	public MovieDetailDTO constructDTO(Movie movie) {
-		MovieDetailDTO dto = new MovieDetailDTO();
-		dto.setMovieId(movie.getSecureId());
-		dto.setTitle(movie.getTitle());
-		dto.setActors(actorService.constructDTO(movie.getActors()));
-		dto.setDirectors(directorService.constructDTO(movie.getDirectors()));
-		return dto;
-	}
+	// @Override
+	// public MovieDetailDTO constructDTO(Movie movie) {
+	// MovieDetailDTO dto = new MovieDetailDTO();
+	// dto.setMovieId(movie.getSecureId());
+	// dto.setTitle(movie.getTitle());
+	// dto.setActors(actorService.constructDTO(movie.getActors()));
+	// dto.setDirectors(directorService.constructDTO(movie.getDirectors()));
+	// return dto;
+	// }
 }
+
+// @Override
+// public ResultPageResponseDTO<MovieDetailDTO> findMovieList(Integer pages,
+// Integer limit, String sortBy,
+// String direction, String movieTitle) {
+// movieTitle = StringUtils.isEmpty(movieTitle) ? "%" : movieTitle + "%";
+// Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction),
+// sortBy));
+// Pageable pageable = PageRequest.of(pages, limit, sort);
+// Page<Movie> pageResult =
+// movieRepository.findByTitleLikeIgnoreCase(movieTitle, pageable);
+// List<MovieDetailDTO> dtos = pageResult.stream().map((m) -> {
+// MovieDetailDTO dto = new MovieDetailDTO();
+// dto.setMovieId(m.getSecureId()); // Set the movieId using the getId() method
+// of the Movie entity
+// dto.setTitle(m.getTitle());
+
+// // Map the genres to a list of GenreResponseDTO
+// List<GenreResponseDTO> genreDTOs = m.getGenre().stream().map(genre -> {
+// GenreResponseDTO genreDTO = new GenreResponseDTO();
+// genreDTO.setGenre(genre.getGenre());
+// return genreDTO;
+// }).collect(Collectors.toList());
+// dto.setGenres(genreDTOs);
+
+// // Map the actors to a list of PersonResponseDTO
+// List<PersonResponseDTO> actorDTOs = m.getActors().stream().map(actor -> {
+// PersonResponseDTO actorDTO = new PersonResponseDTO();
+// actorDTO.setName(actor.getName());
+// actorDTO.setAge(actor.getAge());
+// return actorDTO;
+// }).collect(Collectors.toList());
+// dto.setActors(actorDTOs);
+
+// // Map the directors to a list of PersonResponseDTO
+// List<PersonResponseDTO> directorDTOs = m.getDirectors().stream().map(director
+// -> {
+// PersonResponseDTO directorDTO = new PersonResponseDTO();
+// directorDTO.setName(director.getName());
+// directorDTO.setAge(director.getAge());
+// return directorDTO;
+// }).collect(Collectors.toList());
+// dto.setDirectors(directorDTOs);
+
+// return dto;
+// }).collect(Collectors.toList());
+// return PaginationUtil.createResultPageDTO(dtos,
+// pageResult.getTotalElements(), pageResult.getTotalPages());
+// }

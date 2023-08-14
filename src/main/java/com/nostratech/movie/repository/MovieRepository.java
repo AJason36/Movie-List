@@ -37,10 +37,15 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 	// 		+ "AND LOWER(g.genre) LIKE LOWER(CONCAT('%', :genre, '%'))")
 	// public Page<Movie> findMovieList(String movieTitle, String genre, Pageable pageable);
 
-	@Query("SELECT DISTINCT new com.nostratech.movie.dto.MovieQueryDTO(m.id, m.secureId m.title)" +
+	@Query("SELECT DISTINCT new com.nostratech.movie.dto.MovieQueryDTO(m.id, m.secureId, m.title)" +
 			" FROM Movie m "
-			+ "INNER JOIN Genres g ON g.id = m.genre.id"
+			+ "JOIN m.genre g "
+			+ "JOIN m.actors a "
+			+ "JOIN m.directors d "
 			+ "WHERE LOWER(m.title) LIKE LOWER(CONCAT('%', :movieTitle, '%')) "
-			+ "AND LOWER(g.genre) LIKE LOWER(CONCAT('%', :genre, '%'))")
-	public Page<MovieQueryDTO> findMovieList(String movieTitle, String genre, Pageable pageable);
+			+ "AND LOWER(g.genre) LIKE LOWER(CONCAT('%', :genre, '%')) "
+			+ "AND LOWER(a.name) LIKE LOWER(CONCAT('%', :actorName, '%')) "
+			+"AND LOWER(d.name) LIKE LOWER(CONCAT('%', :directorName, '%'))"
+			)
+	public Page<MovieQueryDTO> findMovieList(String movieTitle, String genre, String actorName, String directorName, Pageable pageable);
 }

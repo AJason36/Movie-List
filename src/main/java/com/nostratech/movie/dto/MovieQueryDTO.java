@@ -9,5 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class MovieQueryDTO implements Serializable{
     private Long movieId;
+    private String secureId;
 	private String title;
 }
