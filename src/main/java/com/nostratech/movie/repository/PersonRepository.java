@@ -30,13 +30,13 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
 	public Page<Person> findByNameLikeIgnoreCase(String personName, Pageable pageable);
 
-	@Query("SELECT new com.nostratech.movie.dto.dto.ActorQueryDTO(m.id, ma.name) "
+	@Query("SELECT new com.nostratech.movie.dto.ActorQueryDTO(m.id, ma.name) "
 			+ "FROM Movie m "
 			+ "JOIN m.actors ma "
 			+ "WHERE m.id IN :movieIdList")
 	public List<ActorQueryDTO> findActorsByMovieIdList(List<Long> movieIdList);
 	 
-	@Query("SELECT new com.nostratech.movie.dto.dto.DirectorQueryDTO(m.id, md.name) "
+	@Query("SELECT new com.nostratech.movie.dto.DirectorQueryDTO(m.id, md.name) "
 			+ "FROM Movie m "
 			+ "JOIN m.directors md "
 			+ "WHERE m.id IN :movieIdList")
