@@ -1,6 +1,7 @@
 package com.nostratech.movie.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.nostratech.movie.domain.Genres;
 import com.nostratech.movie.dto.GenreCreateRequestDTO;
@@ -26,4 +27,6 @@ public interface GenreService {
 	
 	public List<GenreResponseDTO> constructDTO(List<Genres> genre);
 	
+	public Map<Long, List<String>> findGenreMaps(List<Long> movieIdList);
+
 }

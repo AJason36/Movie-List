@@ -1,6 +1,9 @@
 package com.nostratech.movie.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.nostratech.movie.domain.Genres;
 import com.nostratech.movie.dto.GenreCreateRequestDTO;
+import com.nostratech.movie.dto.GenreQueryDTO;
 import com.nostratech.movie.dto.GenreResponseDTO;
 import com.nostratech.movie.dto.GenreUpdateRequestDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
@@ -84,6 +88,23 @@ public class GenreServiceImpl implements GenreService {
             dto.setGenre(g.getGenre());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<Long, List<String>> findGenreMaps(List<Long> movieIdList) {
+        List<GenreQueryDTO> queryList =  genreRepository.findGenreByMovieIdList(movieIdList);
+		Map<Long, List<String>> genreMaps = new HashMap<>();
+		List<String> genreNameList = null;
+		for(GenreQueryDTO q:queryList) {
+			if(!genreMaps.containsKey(q.getMovieId())) {
+				genreNameList = new ArrayList<>();
+			}else {
+				genreNameList = genreMaps.get(q.getMovieId());
+			}
+			genreNameList.add(q.getGenre());
+			genreMaps.put(q.getMovieId(), genreNameList);
+		}
+		return genreMaps;
     }
 	
 }
