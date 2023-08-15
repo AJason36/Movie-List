@@ -42,10 +42,17 @@ public class GenreServiceImpl implements GenreService {
 
     public List<Genres> findGenres(List<String> genreIdList) {
         List<Genres> genres = genreRepository.findBySecureIdIn(genreIdList);
-		if (genres.isEmpty())
-			throw new BadRequestException("genre cant empty");
-		return genres;
+        if (genres.isEmpty())
+            throw new BadRequestException("genre cant empty");
+        return genres;
     }
+    public List<Genres> findGenresByName(List<String> genreNameList) {
+        List<Genres> genres = genreRepository.findByGenreIgnoreCaseIn(genreNameList);
+        if (genres.isEmpty())
+            throw new BadRequestException("genre not found");
+        return genres;
+    }
+    
     public void createNewGenre(GenreCreateRequestDTO dto) {
         Genres genre = new Genres();
         genre.setGenre(dto.getGenre());

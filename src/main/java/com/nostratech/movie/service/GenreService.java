@@ -16,6 +16,8 @@ public interface GenreService {
 	
 	public List<Genres> findGenres(List<String> genreIdList);
 	
+	public List<Genres> findGenresByName(List<String> genreNameList);
+	
 	public void createNewGenre(GenreCreateRequestDTO dto);
 	
 	public void updateGenre(String genreId, GenreUpdateRequestDTO dto);

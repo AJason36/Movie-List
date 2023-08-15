@@ -22,6 +22,7 @@ public interface GenreRepository extends JpaRepository<Genres, Long> {
 
 	// sql -> select a from Genres a where a.Genres_Genre = :genre
 	public Optional<Genres> findByGenre(String genre);
+	public List<Genres> findByGenreIgnoreCaseIn(List<String> genres);
 
 	public List<Genres> findBySecureIdIn(List<String> genreIdList);
 
