@@ -21,6 +21,8 @@ public interface PersonService {
 	public void deletePerson(String personId);
 
 	public List<Person> findPersons(List<String> personIdList);
+
+	public List<Person> findPersonsByName(List<String> personNameList);
 	
 	public List<PersonResponseDTO> constructDTO(List<Person> persons);
 

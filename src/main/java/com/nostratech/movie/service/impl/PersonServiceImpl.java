@@ -95,6 +95,14 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
+	public List<Person> findPersonsByName(List<String> personNameList) {
+		List<Person> persons = personRepository.findByNameIgnoreCaseIn(personNameList);
+		if (persons.isEmpty())
+			throw new BadRequestException("Person not found");
+		return persons;
+	}
+
+	@Override
 	public List<PersonResponseDTO> constructDTO(List<Person> persons) {
 		return persons.stream().map((p) -> {
 			PersonResponseDTO dto = new PersonResponseDTO();

@@ -24,6 +24,10 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 	// sql -> select a from Person a where a.Person_name = :PersonName
 	public Optional<Person> findByName(String personName);
 
+	public Optional<Person> findByNameIgnoreCase(String personName);
+	
+	public List<Person> findByNameIgnoreCaseIn(List<String> personNames);
+
 	public List<Person> findBySecureIdIn(List<String> personIdList);
 
 	public Optional<Person> findBySecureId(String id);
