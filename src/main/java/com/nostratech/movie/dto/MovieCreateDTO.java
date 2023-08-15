@@ -18,12 +18,20 @@ public class MovieCreateDTO {
 	private String title;
 	
 	@NotBlank
-	private List<String> genreIdList;
+	private List<String> genreNameList;
+	@NotEmpty
+	private List<String> actorNameList;
 
 	@NotEmpty
-	private List<String> actorIdList;
-
-	@NotEmpty
-	private List<String> directorIdList;
+	private List<String> directorNameList;
+	// @NotBlank
+	// private List<String> genreIdList;
+	
+	// @NotEmpty
+	// private List<String> actorIdList;
+	
+	// @NotEmpty
+	// private List<String> directorIdList;
+	
 
 }

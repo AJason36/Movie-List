@@ -70,9 +70,12 @@ public class MovieServiceImpl implements MovieService {
 	@Override
 	public void createNewMovie(MovieCreateDTO dto) {
 		Movie movie = new Movie();
-		List<Person> actors = actorService.findPersons(dto.getActorIdList());
-		List<Person> directors = directorService.findPersons(dto.getDirectorIdList());
-		List<Genres> genres = genreService.findGenres(dto.getGenreIdList());
+		// List<Person> actors = actorService.findPersons(dto.getActorIdList());
+		// List<Person> directors = directorService.findPersons(dto.getDirectorIdList());
+		// List<Genres> genres = genreService.findGenres(dto.getGenreIdList());
+		List<Person> actors = actorService.findPersonsByName(dto.getActorNameList());
+		List<Person> directors = directorService.findPersonsByName(dto.getDirectorNameList());
+		List<Genres> genres = genreService.findGenresByName(dto.getGenreNameList());
 
 		movie.setTitle(dto.getTitle());
 		movie.setActors(actors);

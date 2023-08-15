@@ -46,7 +46,6 @@ public class MovieResource {
 
 	}
 	
-	//nama yang salah /save-Movie /create-Movie
 	@PostMapping("/v1/movie")
 	public ResponseEntity<Void> createANewMovie(@RequestBody MovieCreateDTO dto){
 		movieService.createNewMovie(dto);
@@ -63,6 +62,21 @@ public class MovieResource {
 			@RequestParam(name = "genre", required = false, defaultValue = "") String genre,
 			@RequestParam(name = "actorName", required = false, defaultValue = "") String actorName,
 			@RequestParam(name = "directorName", required = false, defaultValue = "") String directorName) {
+		return ResponseEntity.ok().body(movieService.findMovieList(pages, limit, sortBy, direction, title, genre, actorName, directorName));
+	}
+	
+	@GetMapping("/v1/movie/{movieId}/review}")
+	public ResponseEntity<ResultPageResponseDTO<MovieListResponseDTO>> findMovieListByReview(
+		@PathVariable("movieId") String movieId,
+		@RequestParam(name = "pages", required = true, defaultValue = "0") Integer pages, 
+			@RequestParam(name = "limit", required = true, defaultValue = "10") Integer limit,
+			@RequestParam(name="sortBy", required = true, defaultValue = "title") String sortBy,
+			@RequestParam(name="direction", required = true, defaultValue = "asc") String direction,
+			@RequestParam(name = "title", required = false, defaultValue = "") String title,
+			@RequestParam(name = "genre", required = false, defaultValue = "") String genre,
+			@RequestParam(name = "actorName", required = false, defaultValue = "") String actorName,
+			@RequestParam(name = "directorName", required = false, defaultValue = "") String directorName) {
+
 		return ResponseEntity.ok().body(movieService.findMovieList(pages, limit, sortBy, direction, title, genre, actorName, directorName));
 	}
 	
