@@ -8,6 +8,7 @@ import com.nostratech.movie.dto.MovieDetailDTO;
 import com.nostratech.movie.dto.MovieListResponseDTO;
 import com.nostratech.movie.dto.MovieUpdateRequestDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
+import com.nostratech.movie.dto.ReviewResponseDTO;
 
 
 public interface MovieService {
@@ -28,5 +29,5 @@ public interface MovieService {
 			Integer limit, String sortBy, String direction, String movieTitle, String genre, String actorName, String directorName);
 	
 	// public MovieDetailDTO constructDTO(Movie movie);
-	
+	public List<ReviewResponseDTO> getReviewsByMovieId(String movieId);
 }

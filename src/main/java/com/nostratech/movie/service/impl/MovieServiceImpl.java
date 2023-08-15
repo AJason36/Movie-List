@@ -27,6 +27,7 @@ import com.nostratech.movie.dto.MovieQueryDTO;
 import com.nostratech.movie.dto.MovieUpdateRequestDTO;
 import com.nostratech.movie.dto.PersonResponseDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
+import com.nostratech.movie.dto.ReviewResponseDTO;
 import com.nostratech.movie.exception.BadRequestException;
 import com.nostratech.movie.repository.MovieRepository;
 
@@ -148,6 +149,12 @@ public class MovieServiceImpl implements MovieService {
 			return dto;
 		}).collect(Collectors.toList());
 		return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
+	}
+
+	@Override
+	public List<ReviewResponseDTO> getReviewsByMovieId(String movieId) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getReviewsByMovieId'");
 	}
 
 	// @Override

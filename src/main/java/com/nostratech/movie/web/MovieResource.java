@@ -21,7 +21,9 @@ import com.nostratech.movie.dto.MovieListResponseDTO;
 import com.nostratech.movie.dto.MovieCreateDTO;
 import com.nostratech.movie.dto.MovieUpdateRequestDTO;
 import com.nostratech.movie.dto.ResultPageResponseDTO;
+import com.nostratech.movie.dto.ReviewResponseDTO;
 import com.nostratech.movie.service.MovieService;
+import com.nostratech.movie.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
@@ -34,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MovieResource {
 	
 	private final MovieService movieService;
+	private final ReviewService reviewService; 
 
 	@GetMapping("/v1/movie/{movieId}")
 	public ResponseEntity<MovieDetailDTO> findMovieDetail(@PathVariable("movieId") String id) {
@@ -65,19 +68,14 @@ public class MovieResource {
 		return ResponseEntity.ok().body(movieService.findMovieList(pages, limit, sortBy, direction, title, genre, actorName, directorName));
 	}
 	
-	@GetMapping("/v1/movie/{movieId}/review}")
-	public ResponseEntity<ResultPageResponseDTO<MovieListResponseDTO>> findMovieListByReview(
+	@GetMapping("/v1/movie/{movieId}/review")
+	public ResponseEntity<ResultPageResponseDTO<ReviewResponseDTO>> findMovieListByReview(
 		@PathVariable("movieId") String movieId,
 		@RequestParam(name = "pages", required = true, defaultValue = "0") Integer pages, 
 			@RequestParam(name = "limit", required = true, defaultValue = "10") Integer limit,
-			@RequestParam(name="sortBy", required = true, defaultValue = "title") String sortBy,
-			@RequestParam(name="direction", required = true, defaultValue = "asc") String direction,
-			@RequestParam(name = "title", required = false, defaultValue = "") String title,
-			@RequestParam(name = "genre", required = false, defaultValue = "") String genre,
-			@RequestParam(name = "actorName", required = false, defaultValue = "") String actorName,
-			@RequestParam(name = "directorName", required = false, defaultValue = "") String directorName) {
-
-		return ResponseEntity.ok().body(movieService.findMovieList(pages, limit, sortBy, direction, title, genre, actorName, directorName));
+			@RequestParam(name="sortBy", required = true, defaultValue = "movieId") String sortBy,
+			@RequestParam(name="direction", required = true, defaultValue = "asc") String direction) {
+		return ResponseEntity.ok().body(reviewService.findReviewListByMovie(pages, limit, sortBy, direction, movieId));
 	}
 	
 	//PUT /movie
