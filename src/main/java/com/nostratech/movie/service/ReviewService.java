@@ -25,6 +25,8 @@ public interface ReviewService {
 	public List<ReviewResponseDTO> constructDTO(List<Review> reviews);
 
 	public ResultPageResponseDTO<ReviewResponseDTO> findReviewList(Integer pages, 
-			Integer limit, String sortBy, String direction, String comment);
+			Integer limit, String sortBy, String direction, String username);
+	public ResultPageResponseDTO<ReviewResponseDTO> findReviewListByMovie(Integer pages, 
+			Integer limit, String sortBy, String direction, String movieId);
 	
 }

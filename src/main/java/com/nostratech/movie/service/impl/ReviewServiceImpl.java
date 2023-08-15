@@ -127,6 +127,23 @@ public class ReviewServiceImpl implements ReviewService {
 		}).collect(Collectors.toList());
 		return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());      
     }
+
+    @Override
+    public ResultPageResponseDTO<ReviewResponseDTO> findReviewListByMovie(Integer pages, Integer limit, String sortBy,
+            String direction, String movieId) {
+        // movieId =  StringUtils.isEmpty(movieId) ? "%":movieId+"%";
+		Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
+		Pageable pageable = PageRequest.of(pages, limit, sort);
+		Page<Review> pageResult =  reviewRepository.findByMovieSecureId(movieId, pageable);
+		List<ReviewResponseDTO> dtos =  pageResult.stream().map((r)->{
+			ReviewResponseDTO dto = new ReviewResponseDTO();
+            dto.setComment(r.getComment());
+            dto.setStar(r.getStar());
+            Users user = r.getUser();
+            dto.setUsername(user.getUsername());
+			return dto;
+		}).collect(Collectors.toList());
+		return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
+    }
 	
-    
 }
