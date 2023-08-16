@@ -94,6 +94,13 @@ public class MovieServiceImpl implements MovieService {
 			throw new BadRequestException("Movie not found");
 		}
 	}
+	@Override
+	public Movie findMovieByTitle(String movieTitle) {
+		Movie movie = movieRepository.findByTitleIgnoreCase(movieTitle);
+		if (movie==null)
+			throw new BadRequestException("Person not found");
+		return movie;
+	}
 
 	@Override
 	public void updateMovie(String movieId, MovieUpdateRequestDTO dto) {

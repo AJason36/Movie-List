@@ -26,6 +26,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 	public Optional<Movie> findByIdAndDeletedFalse(Long id);
 
 	public Optional<Movie> findByTitle(String movieTitle);
+	public Movie findByTitleIgnoreCase(String movieTitle);
 
 	public List<Movie> findBySecureIdIn(List<String> movieIdList);
 

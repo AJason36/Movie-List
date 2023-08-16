@@ -16,6 +16,8 @@ public interface MovieService {
 	public MovieDetailDTO findMovieDetailById(String movieId);
 
 	public Movie findMovie(String movieId);
+
+	public Movie findMovieByTitle(String movieTitle);
 	
 	public List<MovieDetailDTO> findMovieListDetail();
 	
