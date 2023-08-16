@@ -28,5 +28,5 @@ public class ReviewCreateRequestDTO implements Serializable {
 	private String userId;
 
 	@NotNull
-	private String movieId;
+	private String movieTitle;
 }

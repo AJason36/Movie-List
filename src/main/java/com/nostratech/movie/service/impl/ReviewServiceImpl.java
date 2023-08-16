@@ -64,7 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setComment(dto.getComment());
         review.setStar(dto.getStar());
 
-        Movie movie = movieService.findMovie(dto.getMovieId());
+        Movie movie = movieService.findMovieByTitle(dto.getMovieTitle());
         Users user = usersService.findUser(dto.getUserId());
         review.setMovie(movie);
         review.setUser(user);
